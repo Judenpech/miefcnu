@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Configuration;
 using System.IO;
 using System.Diagnostics;
+using System.Net;
 
 namespace CatchnUpload
 {
@@ -22,26 +23,17 @@ namespace CatchnUpload
 
         private void btn_catch_Click(object sender, EventArgs e)
         {
-            bool flag1 = true;
-            string fail = "";
+            int cnt = 0;
             string[] files = ConfigurationManager.AppSettings["files"].Split(';');
             foreach (string f in files)
             {
-                bool flag2 = CopyFiles(f, ConfigurationManager.AppSettings["sourcePath"], savePathDir);
-                if (!flag2)
+                bool flag = CopyFiles(f, ConfigurationManager.AppSettings["sourcePath"], savePathDir);
+                if (flag)
                 {
-                    fail += f + ";";
-                    flag1 = false;
+                    cnt++;
                 }
             }
-            if (flag1)
-            {
-                MessageBox.Show("文件抓取成功！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show("部分文件抓取失败！抓取失败文件：\n" + fail, "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            MessageBox.Show("文件抓取成功 " + cnt + " 个！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private bool CopyFiles(string fileName, string sourcePath, string savePath)
@@ -50,11 +42,19 @@ namespace CatchnUpload
             {
                 Directory.CreateDirectory(savePath);
             }
-
             try
             {
-                File.Copy(sourcePath + "\\" + fileName,
-                    savePath + "\\" + DateTime.Now.ToString("yyyyMMddhhmmss") + fileName, true);
+                DirectoryInfo directoryInfo = new DirectoryInfo(sourcePath);
+                foreach (FileInfo f in directoryInfo.GetFiles())
+                {
+                    string ff = f.ToString().ToLower();
+                    if (ff == fileName)
+                    {
+                        File.Copy(sourcePath + "\\" + f.ToString(),
+                    savePath + "\\" + ConfigurationManager.AppSettings["userID"] + "_"
+                    + DateTime.Now.ToString("yyyyMMddhhmmss") + "_" + fileName, true);
+                    }
+                }
             }
             catch (Exception)
             {
@@ -65,15 +65,36 @@ namespace CatchnUpload
 
         private void btn_upload_Click(object sender, EventArgs e)
         {
-            string hostPath = ConfigurationManager.AppSettings["host"] + "\\" + ConfigurationManager.AppSettings["userID"] + "\\";
-
-            //连接共享文件夹
-            bool status = connectState(ConfigurationManager.AppSettings["host"],
-                ConfigurationManager.AppSettings["username"], ConfigurationManager.AppSettings["password"]);
-            if (status)
+            if (ConfigurationManager.AppSettings["flag"] == "0")
             {
-                //MessageBox.Show("服务器连接成功！", "提醒", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                bool hasUploded = uploadFiles(hostPath);
+                //连接共享文件夹
+                string hostPath = ConfigurationManager.AppSettings["host"] + "\\" + ConfigurationManager.AppSettings["userID"] + "\\";
+
+                bool status = connectState(ConfigurationManager.AppSettings["host"],
+                    ConfigurationManager.AppSettings["username"], ConfigurationManager.AppSettings["password"]);
+                if (status)
+                {
+                    //MessageBox.Show("服务器连接成功！", "提醒", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    bool hasUploded = uploadFiles(hostPath);
+                    if (hasUploded)
+                    {
+                        MessageBox.Show("文件上传成功！", "提醒", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("文件上传失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("服务器连接失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                //连接FTP服务器
+                string hostPath = ConfigurationManager.AppSettings["ftpHost"] + @"/";
+                bool hasUploded = uploadFiles2ftp(hostPath);
                 if (hasUploded)
                 {
                     MessageBox.Show("文件上传成功！", "提醒", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -82,10 +103,6 @@ namespace CatchnUpload
                 {
                     MessageBox.Show("文件上传失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-            }
-            else
-            {
-                MessageBox.Show("服务器连接失败！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -138,7 +155,6 @@ namespace CatchnUpload
             {
                 Directory.CreateDirectory(hostPath);
             }
-
             try
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(savePathDir);
@@ -158,6 +174,8 @@ namespace CatchnUpload
                     inFileStream.Close();
                     outFileStream.Flush();
                     outFileStream.Close();
+
+                    //上传成功则删除文件
                     File.Delete(filePath);
                 }
             }
@@ -168,16 +186,58 @@ namespace CatchnUpload
             return true;
         }
 
+        private bool uploadFiles2ftp(string hostPath)//，string filename)
+        {
+            FtpWebRequest reqFTP;
+            DirectoryInfo directoryInfo = new DirectoryInfo(savePathDir);
+            foreach (FileInfo f in directoryInfo.GetFiles())
+            {
+                string filePath = savePathDir + @"/" + f.ToString();
+                FileInfo ff = new FileInfo(filePath);
+                try
+                {
+                    reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri(hostPath + f.Name));
+                    reqFTP.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["ftpUsername"],
+                        ConfigurationManager.AppSettings["ftpPassword"]);
+                    reqFTP.KeepAlive = false;
+                    reqFTP.Method = WebRequestMethods.Ftp.UploadFile;
+                    reqFTP.UseBinary = true;
+                    reqFTP.UsePassive = false;
+                    reqFTP.ContentLength = ff.Length;
+                    int buffLength = 2048;
+                    byte[] buff = new byte[buffLength];
+                    int contentLen;
+
+                    FileStream fs = ff.OpenRead();
+                    Stream strm = reqFTP.GetRequestStream();
+                    contentLen = fs.Read(buff, 0, buffLength);
+                    while (contentLen != 0)
+                    {
+                        strm.Write(buff, 0, contentLen);
+                        contentLen = fs.Read(buff, 0, buffLength);
+                    }
+                    strm.Close();
+                    fs.Close();
+                    reqFTP = null;
+
+                    //上传成功则删除文件
+                    File.Delete(filePath);
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private void frm_main_Load(object sender, EventArgs e)
         {
             savePathDir = System.IO.Directory.GetCurrentDirectory() + "\\save\\" + DateTime.Now.ToString("yyyyMMdd");
 
             txb_id.Text = ConfigurationManager.AppSettings["userID"];
-            txb_id.Enabled = false;
             txb_path.Text = ConfigurationManager.AppSettings["sourcePath"];
-            txb_path.Enabled = false;
             rtxb_files.Text = ConfigurationManager.AppSettings["files"];
-            rtxb_files.Enabled = false;
         }
     }
 }

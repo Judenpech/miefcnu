@@ -19,3 +19,13 @@ C:\Users\Lenovo\Desktop\CatchnUpload\CatchnUpload\obj\Debug\CatchnUpload.csproj.
 C:\Users\Lenovo\Desktop\CatchnUpload\CatchnUpload\obj\Debug\CatchnUpload.exe
 C:\Users\Lenovo\Desktop\CatchnUpload\CatchnUpload\obj\Debug\CatchnUpload.pdb
 C:\Users\Lenovo\Desktop\CatchnUpload\CatchnUpload\bin\Debug\App.config
+C:\Users\Lenovo\Documents\GitHub\miefcnu\Src\CatchnUpload\CatchnUpload\bin\Debug\CatchnUpload.exe.config
+C:\Users\Lenovo\Documents\GitHub\miefcnu\Src\CatchnUpload\CatchnUpload\bin\Debug\CatchnUpload.exe
+C:\Users\Lenovo\Documents\GitHub\miefcnu\Src\CatchnUpload\CatchnUpload\bin\Debug\CatchnUpload.pdb
+C:\Users\Lenovo\Documents\GitHub\miefcnu\Src\CatchnUpload\CatchnUpload\obj\Debug\CatchnUpload.csprojResolveAssemblyReference.cache
+C:\Users\Lenovo\Documents\GitHub\miefcnu\Src\CatchnUpload\CatchnUpload\obj\Debug\CatchnUpload.frm_main.resources
+C:\Users\Lenovo\Documents\GitHub\miefcnu\Src\CatchnUpload\CatchnUpload\obj\Debug\CatchnUpload.Properties.Resources.resources
+C:\Users\Lenovo\Documents\GitHub\miefcnu\Src\CatchnUpload\CatchnUpload\obj\Debug\CatchnUpload.csproj.GenerateResource.cache
+C:\Users\Lenovo\Documents\GitHub\miefcnu\Src\CatchnUpload\CatchnUpload\obj\Debug\CatchnUpload.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\Documents\GitHub\miefcnu\Src\CatchnUpload\CatchnUpload\obj\Debug\CatchnUpload.exe
+C:\Users\Lenovo\Documents\GitHub\miefcnu\Src\CatchnUpload\CatchnUpload\obj\Debug\CatchnUpload.pdb
