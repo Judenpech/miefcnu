@@ -38,7 +38,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.txb_id = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -127,23 +126,11 @@
             this.panel1.Controls.Add(this.btn_catch);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.btn_upload);
-            this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(781, 582);
             this.panel1.TabIndex = 5;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label4.Location = new System.Drawing.Point(55, 535);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(673, 30);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "注意：在点击【抓取】之前，请先停止医保接口。";
             // 
             // frm_main
             // 
@@ -176,7 +163,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txb_id;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label label4;
     }
 }
 
