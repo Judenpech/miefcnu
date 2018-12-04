@@ -11,8 +11,6 @@ License: MIT
 ## 简介
 该应用采用 C# 语言编写。在使用之前请先配置`config`文件。
 
-你可以点击[ App ](https://github.com/jl223vy/miefcnu/raw/master/App/CatchnUpload-v1.0.zip) 直接下载得到该软件。
-
 主要的功能如下：
 
 - 配置需要抓取的医保异常文件目录及文件名、用户标识等
@@ -53,7 +51,7 @@ License: MIT
 
 ## 下载
 
-[Download](https://github.com/jl223vy/Helper_for_CommissaryInChargeOfStudies/raw/master/%E5%AD%A6%E5%A7%94%E5%8A%A9%E6%89%8BV1.2.zip)
+[Download](https://github.com/jl223vy/miefcnu/raw/master/App/CatchnUpload-v1.0.zip)
 
 PS：提供 .NET framework 2.0 和 .NET framework 4.0 下载使用。
 
